@@ -1,14 +1,15 @@
-import datetime, os, shutil
+import datetime
+import os
+import shutil
 
 #Iterate over the files in a directory and append them in a list.
 def create_list(folder):
     files = []
 
-    for file in os.listdir(folder):
+    for each_file in os.listdir(folder):
         #Append only if it's a file, not a directory
-        if os.path.isdir(os.path.join(folder,file)):
-            continue
-        files.append(file)
+        if os.path.isfile(os.path.join(folder, each_file)):
+            files.append(each_file)
 
     return files
 
@@ -23,7 +24,7 @@ def extract_date_mp3(mp3):
 
 #Extrat the name (Category) form the Word file's folder name. e.g. D:\folder\directory\Category ==> Category
 def extract_name_word(word):
-    return word.split("\\")[-1]
+    return os.path.split(word)[1]
 
 
 #Verify if the Word file and the mp3 file were created less than 7 days appart.
@@ -45,15 +46,15 @@ def in_between(word,mp3):
 
 #Copy matching mp3's in the specified directory.
 def copy_my_mp3(mp3, word, folder):
-    dest_dir = folder+"\Mes sketchs"
+    dest_dir = os.path.join(folder, "Mes sketchs")
 
     #If the directory does'nt exist, create it.
     if not os.path.isdir(dest_dir):
         os.makedirs(dest_dir)
 
     #If the mp3 is'nt already copied, copy it.
-    if not os.path.isfile(dest_dir + "\\" + mp3):
-        shutil.copy(folder+"\\"+mp3, dest_dir)
+    if not os.path.isfile(os.path.join(dest_dir, mp3)):
+        shutil.copy(os.path.join(folder, mp3), dest_dir)
         print("MATCH! : {}   ===   {}".format(word,mp3))
         print("COPIE EN COURS")
 
@@ -75,7 +76,7 @@ def analyse_dir(main_dir, dir_mp3):
         #Tell the user wich directory whe are analysing
         print("Analyse du dossier: " + folder)
         #Compare the Word directory with the mp3 directory
-        compare(main_dir + "\\" + folder, dir_mp3)
+        compare(os.path.join(main_dir, folder), dir_mp3)
 
 
 
@@ -84,4 +85,5 @@ main_word = "C:\Directory\Containing\Directories"
 #Main directory containing all the mp3's
 main_mp3 = "C:\Directory\Containing\Mp3s"
 
-analyse_dir(main_word,main_mp3)
+if __name__ == '__main__':
+    analyse_dir(main_word,main_mp3)
